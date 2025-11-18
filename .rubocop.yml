@@ -1,8 +1,10 @@
 AllCops:
   TargetRubyVersion: 3.0
+  NewCops: enable
 
-Style/StringLiterals:
-  EnforcedStyle: double_quotes
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
 
-Style/StringLiteralsInInterpolation:
-  EnforcedStyle: double_quotes
+Style/Documentation:
+  Enabled: false
