@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+
+require "agent_status_bulb"
