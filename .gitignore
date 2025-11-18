@@ -6,6 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+.rubocop-cache/
 
 # rspec failure tracking
 .rspec_status
