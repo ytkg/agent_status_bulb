@@ -3,4 +3,10 @@
 
 require 'agent_status_bulb/cli'
 
-exit AgentStatusBulb::Cli.start(ARGV)
+begin
+  AgentStatusBulb::Cli.start(ARGV)
+  exit 0
+rescue StandardError => e
+  warn e.message
+  exit 1
+end
