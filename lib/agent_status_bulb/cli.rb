@@ -14,40 +14,36 @@ module AgentStatusBulb
 
     desc 'configure', 'Save Token/Secret/Device ID'
     def configure
-      configurator.configure!
-    rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error { configurator.configure! }
     end
 
     desc 'run', 'Set color to running (blue)'
     def run_command
-      bulb.blue
-    rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error { bulb.blue }
     end
 
     desc 'wait', 'Set color to waiting (orange)'
     def wait_command
-      bulb.orange
-    rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error { bulb.orange }
     end
 
     desc 'idle', 'Set color to idle (green)'
     def idle_command
-      bulb.green
-    rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error { bulb.green }
     end
 
     desc 'off', 'Turn off the bulb'
     def off_command
-      bulb.off
-    rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error { bulb.off }
     end
 
     no_commands do
+      def handle_error
+        yield
+      rescue StandardError => e
+        raise Thor::Error, e.message
+      end
+
       def bulb
         @bulb ||= AgentStatusBulb::Bulb.from_config(configurator.load!)
       end

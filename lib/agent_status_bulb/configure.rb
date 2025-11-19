@@ -7,37 +7,54 @@ require 'io/console'
 module AgentStatusBulb
   class Configure
     DEFAULT_PATH = File.expand_path('~/.config/agent_status_bulb.yml').freeze
+    CREDENTIAL_FIELDS = [
+      { key: :token, label: 'Token', conceal: true },
+      { key: :secret, label: 'Secret', conceal: true },
+      { key: :device_id, label: 'Device ID', conceal: false }
+    ].freeze
 
-    def initialize
-      @path = DEFAULT_PATH
+    def initialize(path = DEFAULT_PATH)
+      @path = path
     end
 
     def configure!
-      token = prompt('Token', conceal: true)
-      secret = prompt('Secret', conceal: true)
-      device_id = prompt('Device ID')
-
-      FileUtils.mkdir_p(File.dirname(@path))
-      File.write(@path, { 'token' => token, 'secret' => secret, 'device_id' => device_id }.to_yaml)
+      credentials = gather_credentials
+      write_config(credentials)
       $stdout.puts "Saved config to: #{@path}"
     end
 
     def load!
-      raise "Config file not found: #{@path}" unless File.file?(@path)
+      data = read_config
+      CREDENTIAL_FIELDS.each_with_object({}) do |field, result|
+        value = data.fetch(field[:key].to_s, '').to_s.strip
+        raise missing_config_error if value.empty?
 
-      data = YAML.safe_load_file(@path, permitted_classes: [], aliases: false) || {}
-      token = data['token'].to_s
-      secret = data['secret'].to_s
-      device_id = data['device_id'].to_s
-
-      if token.empty? || secret.empty? || device_id.empty?
-        raise "Config must contain token, secret, and device_id: #{@path}"
+        result[field[:key]] = value
       end
-
-      { token: token, secret: secret, device_id: device_id }
     end
 
     private
+
+    def gather_credentials
+      CREDENTIAL_FIELDS.each_with_object({}) do |field, result|
+        result[field[:key]] = prompt(field[:label], conceal: field[:conceal])
+      end
+    end
+
+    def write_config(credentials)
+      FileUtils.mkdir_p(File.dirname(@path))
+      File.write(@path, credentials.transform_keys(&:to_s).to_yaml)
+    end
+
+    def read_config
+      raise "Config file not found: #{@path}" unless File.file?(@path)
+
+      YAML.safe_load_file(@path, permitted_classes: [], aliases: false) || {}
+    end
+
+    def missing_config_error
+      "Config must contain token, secret, and device_id: #{@path}"
+    end
 
     def prompt(label, conceal: false)
       $stdout.print "#{label}: "
