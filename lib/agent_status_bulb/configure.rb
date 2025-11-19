@@ -8,10 +8,8 @@ module AgentStatusBulb
   class Configure
     DEFAULT_PATH = File.expand_path('~/.config/agent_status_bulb.yml').freeze
 
-    def initialize(path: DEFAULT_PATH, io: $stdin, out: $stdout)
-      @path = path
-      @io = io
-      @out = out
+    def initialize
+      @path = DEFAULT_PATH
     end
 
     def configure!
@@ -21,7 +19,7 @@ module AgentStatusBulb
 
       FileUtils.mkdir_p(File.dirname(@path))
       File.write(@path, { 'token' => token, 'secret' => secret, 'device_id' => device_id }.to_yaml)
-      @out.puts "Saved config to: #{@path}"
+      $stdout.puts "Saved config to: #{@path}"
     end
 
     def load!
@@ -42,9 +40,9 @@ module AgentStatusBulb
     private
 
     def prompt(label, conceal: false)
-      @out.print "#{label}: "
-      input = conceal ? @io.noecho(&:gets) : @io.gets
-      @out.puts if conceal
+      $stdout.print "#{label}: "
+      input = conceal ? $stdin.noecho(&:gets) : $stdin.gets
+      $stdout.puts if conceal
       input.to_s.strip
     end
   end

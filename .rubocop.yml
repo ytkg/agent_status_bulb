@@ -8,3 +8,9 @@ plugins:
 
 Style/Documentation:
   Enabled: false
+
+RSpec/ExampleLength:
+  Max: 9
+
+RSpec/MultipleExpectations:
+  Max: 2

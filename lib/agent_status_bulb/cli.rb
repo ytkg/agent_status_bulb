@@ -1,73 +1,60 @@
 # frozen_string_literal: true
 
+require 'thor'
 require 'agent_status_bulb'
 require 'agent_status_bulb/configure'
 require 'agent_status_bulb/bulb'
 
 module AgentStatusBulb
-  class Cli
-    def self.start(argv)
-      new(argv).run
+  class Cli < Thor
+    map 'run' => :run_command
+    map 'wait' => :wait_command
+    map 'idle' => :idle_command
+    map 'off' => :off_command
+
+    desc 'configure', 'Save Token/Secret/Device ID'
+    def configure
+      configurator.configure!
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
-    def initialize(argv)
-      @argv = argv.dup
-    end
-
-    def run
-      command = @argv.shift
-      handle_command(command)
-    end
-
-    private
-
-    def handle_command(command)
-      case command
-      when 'configure'
-        configure!
-      when 'run'
-        run!
-      when 'wait'
-        wait!
-      when 'idle'
-        idle!
-      when 'off'
-        off!
-      else
-        raise ArgumentError, usage
-      end
-    end
-
-    def configure!
-      AgentStatusBulb::Configure.new.configure!
-    end
-
-    def run!
+    desc 'run', 'Set color to running (blue)'
+    def run_command
       bulb.blue
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
-    def wait!
+    desc 'wait', 'Set color to waiting (orange)'
+    def wait_command
       bulb.orange
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
-    def idle!
+    desc 'idle', 'Set color to idle (green)'
+    def idle_command
       bulb.green
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
-    def off!
+    desc 'off', 'Turn off the bulb'
+    def off_command
       bulb.off
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
-    def usage
-      "Usage: #{File.basename($PROGRAM_NAME)} [run|wait|idle|off|configure]"
-    end
+    no_commands do
+      def bulb
+        @bulb ||= AgentStatusBulb::Bulb.from_config(configurator.load!)
+      end
 
-    def bulb
-      @bulb ||= AgentStatusBulb::Bulb.from_config(configurator.load!)
-    end
-
-    def configurator
-      @configurator ||= AgentStatusBulb::Configure.new
+      def configurator
+        @configurator ||= AgentStatusBulb::Configure.new
+      end
     end
   end
 end

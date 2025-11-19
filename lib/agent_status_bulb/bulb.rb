@@ -14,15 +14,15 @@ module AgentStatusBulb
     end
 
     def blue
-      set_color('0:0:255')
+      apply_color('0:0:255')
     end
 
     def orange
-      set_color('255:125:0')
+      apply_color('255:125:0')
     end
 
     def green
-      set_color('0:255:0')
+      apply_color('0:255:0')
     end
 
     def off
@@ -31,7 +31,7 @@ module AgentStatusBulb
 
     private
 
-    def set_color(value)
+    def apply_color(value)
       turn_on_if_needed
       @device.color(value)
     end

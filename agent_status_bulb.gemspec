@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ['yoshiki.tkg@gmail.com']
 
   spec.summary = 'Control a SwitchBot Color Bulb based on agent status.'
-  spec.description = 'Provides simple commands (asb run, asb wait, asb idle) to visualize the state of any agent or task through color changes.'
+  spec.description = 'Provides simple commands (asb run, asb wait, asb idle) to visualize the state of any agent or task through color changes.' # rubocop:disable Layout/LineLength
   spec.homepage = 'https://github.com/ytkg/agent_status_bulb'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.0.0'
@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'switchbot'
+  spec.add_dependency 'thor'
 end
