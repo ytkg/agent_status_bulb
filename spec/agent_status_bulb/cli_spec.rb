@@ -32,6 +32,11 @@ RSpec.describe AgentStatusBulb::Cli do
     expect(bulb).to have_received(:green)
   end
 
+  it 'ignores unknown options on commands' do
+    expect { described_class.start(['idle', '--hoge']) }.not_to raise_error
+    expect(bulb).to have_received(:green)
+  end
+
   it 'turns off on off' do
     described_class.start(['off'])
     expect(bulb).to have_received(:off)
