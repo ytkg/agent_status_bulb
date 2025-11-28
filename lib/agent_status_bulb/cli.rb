@@ -17,6 +17,11 @@ module AgentStatusBulb
       handle_error { configurator.configure! }
     end
 
+    desc 'version', 'Print the current version'
+    def version
+      puts AgentStatusBulb::VERSION
+    end
+
     desc 'run', 'Set color to running (blue)'
     def run_command
       handle_error { bulb.blue }

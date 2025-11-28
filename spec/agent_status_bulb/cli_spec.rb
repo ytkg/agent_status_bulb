@@ -42,6 +42,10 @@ RSpec.describe AgentStatusBulb::Cli do
     expect { described_class.start(['run'], options) }.to raise_error(Thor::Error, 'boom')
   end
 
+  it 'prints version with version command' do
+    expect { described_class.start(['version']) }.to output("#{AgentStatusBulb::VERSION}\n").to_stdout
+  end
+
   it 'raises on unknown command' do
     expect { described_class.start(['unknown'], options) }.to raise_error(Thor::UndefinedCommandError)
   end
