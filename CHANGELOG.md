@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.3.0] - 2025-11-29
+
+- Added `version` CLI command to print the current version
+- CLI commands now ignore unknown options instead of exiting with an error
+
 ## [0.2.0] - 2025-11-19
 
 - Introduced `AgentStatusBulb::Bulb` to wrap SwitchBot integration and provide run/wait/idle/off color APIs with automatic power control
